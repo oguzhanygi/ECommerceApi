@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using ECommerceApi.Models.Categories;
 using ECommerceApi.Models.Customers;
 using ECommerceApi.Models.Orders;
