@@ -27,7 +27,6 @@
       <Folder Include="Data\Migrations\" />
       <Folder Include="Dtos\Customers\" />
       <Folder Include="Dtos\Orders\" />
-      <Folder Include="Dtos\Products\" />
       <Folder Include="Filters\" />
       <Folder Include="Mappers\" />
     </ItemGroup>

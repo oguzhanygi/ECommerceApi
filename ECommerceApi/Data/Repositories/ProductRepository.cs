@@ -15,4 +15,18 @@ public class ProductRepository(ECommerceDbContext context) :
             .Where(p => p.CategoryId == categoryId)
             .ToListAsync();
     }
-}
+
+    public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+            return Enumerable.Empty<Product>();
+
+        var term = searchTerm.Trim().ToLower();
+    
+        return await _context.Products
+            .Where(p => p.Name.ToLower().Contains(term) || 
+                        (p.Description != null && p.Description.ToLower().Contains(term)) ||
+                        (p.Brand != null && p.Brand.ToLower().Contains(term)))
+            .Include(p => p.Category)
+            .ToListAsync();
+    }}

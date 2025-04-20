@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using ECommerceApi.Models.Categories;
+using ECommerceApi.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApi.Models.Products;
 
-public class Product
+public class Product : ISoftDeletable, IHasTimestamps
 {
     public required Guid Id { get; init; }
     [MaxLength(128), MinLength(2)]
