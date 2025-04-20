@@ -22,11 +22,12 @@ public class ProductRepository(ECommerceDbContext context) :
             return Enumerable.Empty<Product>();
 
         var term = searchTerm.Trim().ToLower();
-    
+
         return await _context.Products
-            .Where(p => p.Name.ToLower().Contains(term) || 
+            .Where(p => p.Name.ToLower().Contains(term) ||
                         (p.Description != null && p.Description.ToLower().Contains(term)) ||
-                        (p.Brand != null && p.Brand.ToLower().Contains(term)))
+                        p.Brand.ToLower().Contains(term))
             .Include(p => p.Category)
             .ToListAsync();
-    }}
+    }
+}

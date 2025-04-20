@@ -4,5 +4,4 @@ namespace ECommerceApi.Services;
 
 public class CustomerService : ICustomerService
 {
-    
 }

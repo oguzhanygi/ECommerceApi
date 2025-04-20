@@ -1,6 +1,4 @@
 using ECommerceApi.Models.Categories;
-using ECommerceApi.Models.Customers;
-using ECommerceApi.Models.Orders;
 using ECommerceApi.Models.Products;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +7,7 @@ namespace ECommerceApi.Data;
 public class ECommerceDbContext(DbContextOptions<ECommerceDbContext> options) : DbContext(options)
 {
     public DbSet<Category> Categories { get; set; }
+
     // public DbSet<Order> Orders { get; set; }
     public DbSet<Product> Products { get; set; }
     // public DbSet<Customer> Customers { get; set; }

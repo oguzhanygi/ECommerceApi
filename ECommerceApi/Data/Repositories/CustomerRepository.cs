@@ -4,5 +4,4 @@ namespace ECommerceApi.Data.Repositories;
 
 public class CustomerRepository : ICustomerRepository
 {
-    
 }
