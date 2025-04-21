@@ -9,7 +9,7 @@ public interface IProductService
     Task<IEnumerable<Product>> GetAllProductsAsync();
     Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId);
     Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
-    Task<Product> CreateProductAsync(Product product);
+    Task<Product?> CreateProductAsync(CreateProductDto dto);
     Task<Product?> UpdateProductAsync(Guid id, UpdateProductDto dto);
     Task<bool> DeleteProductAsync(Guid id);
     Task<bool> RestoreProductAsync(Guid id);

@@ -4,30 +4,43 @@ using ECommerceApi.Models.Products;
 
 namespace ECommerceApi.DTOs.Products;
 
-public class UpdateProductDto : IUpdateDto<Product>
+public class CreateProductDto : ICreateDto<Product>
 {
-    [MaxLength(128)] [MinLength(2)] public required string Name { get; set; }
+    [Required(ErrorMessage = "Product name is required")]
+    [MaxLength(128, ErrorMessage = "Name cannot exceed 128 characters")]
+    [MinLength(2, ErrorMessage = "Name must be at least 2 characters")]
+    public required string Name { get; set; }
 
-    [MaxLength(1024)] public string? Description { get; set; }
+    [MaxLength(1024, ErrorMessage = "Description cannot exceed 1024 characters")]
+    public string? Description { get; set; }
 
-    [Range(0.0, double.MaxValue, ErrorMessage = "Price must be > 0.")]
+    [Required(ErrorMessage = "Price is required")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
     public required decimal Price { get; set; }
 
-    [MaxLength(128)] [MinLength(2)] public required string Brand { get; set; }
+    [Required(ErrorMessage = "Brand is required")]
+    [MaxLength(128, ErrorMessage = "Brand cannot exceed 128 characters")]
+    [MinLength(2, ErrorMessage = "Brand must be at least 2 characters")]
+    public required string Brand { get; set; }
 
-    [Range(0, int.MaxValue, ErrorMessage = "Stock must be >= 0.")]
+    [Required(ErrorMessage = "Stock quantity is required")]
+    [Range(0, int.MaxValue, ErrorMessage = "Stock quantity cannot be negative")]
     public int StockQuantity { get; set; }
 
+    [Required(ErrorMessage = "Category ID is required")]
     public required Guid CategoryId { get; set; }
 
-    public void ApplyUpdatesToEntity(Product product)
+    public Product ToEntity()
     {
-        product.Name = Name;
-        product.Description = Description;
-        product.Price = Price;
-        product.Brand = Brand;
-        product.StockQuantity = StockQuantity;
-        product.CategoryId = CategoryId;
-        product.UpdatedAt = DateTime.UtcNow;
+        return new Product
+        {
+            Id = Guid.NewGuid(),
+            Name = this.Name,
+            Description = this.Description,
+            Price = this.Price,
+            Brand = this.Brand,
+            StockQuantity = this.StockQuantity,
+            CategoryId = this.CategoryId
+        };
     }
 }

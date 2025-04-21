@@ -1,4 +1,5 @@
 using ECommerceApi.Data.Repositories.Interfaces;
+using ECommerceApi.Dtos.Interfaces;
 using ECommerceApi.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,10 +19,12 @@ public class Repository<T>(ECommerceDbContext context) : IRepository<T> where T 
         return await _dbSet.ToListAsync();
     }
 
-    public async Task AddAsync(T entity)
+    public async Task<T?> AddAsync<TDto>(TDto dto) where TDto : ICreateDto<T>
     {
+        var entity = dto.ToEntity();
         await _dbSet.AddAsync(entity);
         await context.SaveChangesAsync();
+        return entity;
     }
 
     public async Task UpdateAsync(T entity)
@@ -30,7 +33,7 @@ public class Repository<T>(ECommerceDbContext context) : IRepository<T> where T 
         await context.SaveChangesAsync();
     }
 
-    async Task<T?> IRepository<T>.UpdateAsync<TDto>(Guid id, TDto dto)
+    public async Task<T?> UpdateAsync<TDto>(Guid id, TDto dto) where TDto : IUpdateDto<T>
     {
         var entity = await GetByIdAsync(id);
         if (entity == null) return null;

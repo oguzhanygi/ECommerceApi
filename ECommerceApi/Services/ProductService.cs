@@ -29,10 +29,9 @@ public class ProductService(
         return await productRepository.SearchProductsAsync(searchTerm);
     }
 
-    public async Task<Product> CreateProductAsync(Product product)
+    public async Task<Product?> CreateProductAsync(CreateProductDto dto)
     {
-        await productRepository.AddAsync(product);
-        return product;
+        return await productRepository.AddAsync(dto);
     }
 
     public async Task<Product?> UpdateProductAsync(Guid id, UpdateProductDto dto)
