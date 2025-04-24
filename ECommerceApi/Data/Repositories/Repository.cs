@@ -1,11 +1,10 @@
 using ECommerceApi.Data.Repositories.Interfaces;
-using ECommerceApi.Dtos.Interfaces;
 using ECommerceApi.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApi.Data.Repositories;
 
-public class Repository<T>(ECommerceDbContext context) : IRepository<T> where T : class
+public class Repository<T>(ECommerceDbContext context) : IRepository<T> where T : class, IEntity
 {
     private readonly DbSet<T> _dbSet = context.Set<T>();
 
@@ -19,30 +18,17 @@ public class Repository<T>(ECommerceDbContext context) : IRepository<T> where T 
         return await _dbSet.ToListAsync();
     }
 
-    public async Task<T?> AddAsync<TDto>(TDto dto) where TDto : ICreateDto<T>
+    public async Task<T?> AddAsync(T entity)
     {
-        var entity = dto.ToEntity();
         await _dbSet.AddAsync(entity);
         await context.SaveChangesAsync();
         return entity;
     }
 
-    public async Task UpdateAsync(T entity)
+    public async Task<T?> UpdateAsync(T entity)
     {
         _dbSet.Update(entity);
         await context.SaveChangesAsync();
-    }
-
-    public async Task<T?> UpdateAsync<TDto>(Guid id, TDto dto) where TDto : IUpdateDto<T>
-    {
-        var entity = await GetByIdAsync(id);
-        if (entity == null) return null;
-
-        dto.ApplyUpdatesToEntity(entity);
-
-        if (entity is IHasTimestamps withTimestamps) withTimestamps.UpdatedAt = DateTime.UtcNow;
-
-        await UpdateAsync(entity);
         return entity;
     }
 
@@ -66,7 +52,9 @@ public class Repository<T>(ECommerceDbContext context) : IRepository<T> where T 
 
     public async Task<bool> RestoreAsync(Guid id)
     {
-        var entity = await _dbSet.FindAsync(id);
+        var entity = await _dbSet
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(e => e.Id == id);
         if (entity is null || entity is not ISoftDeletable softDeletable)
             return false;
 

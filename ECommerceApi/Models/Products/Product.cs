@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApi.Models.Products;
 
-public class Product : ISoftDeletable, IHasTimestamps
+public class Product : IEntity, ISoftDeletable, IHasTimestamps 
 {
     public required Guid Id { get; init; }
 

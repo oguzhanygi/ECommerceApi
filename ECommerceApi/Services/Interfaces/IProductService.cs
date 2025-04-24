@@ -1,16 +1,15 @@
 using ECommerceApi.DTOs.Products;
-using ECommerceApi.Models.Products;
 
 namespace ECommerceApi.Services.Interfaces;
 
 public interface IProductService
 {
-    Task<Product?> GetProductByIdAsync(Guid id);
-    Task<IEnumerable<Product>> GetAllProductsAsync();
-    Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId);
-    Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
-    Task<Product?> CreateProductAsync(CreateProductDto dto);
-    Task<Product?> UpdateProductAsync(Guid id, UpdateProductDto dto);
+    Task<ProductResponseDto?> GetProductByIdAsync(Guid id);
+    Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync();
+    Task<IEnumerable<ProductResponseDto>> GetProductsByCategoryAsync(Guid categoryId);
+    Task<IEnumerable<ProductResponseDto>> SearchProductsAsync(string searchTerm);
+    Task<ProductResponseDto?> CreateProductAsync(CreateProductDto dto);
+    Task<ProductResponseDto?> UpdateProductAsync(Guid id, UpdateProductDto dto);
     Task<bool> DeleteProductAsync(Guid id);
     Task<bool> RestoreProductAsync(Guid id);
     Task<bool> UpdateProductStockAsync(Guid productId, int quantityChange);

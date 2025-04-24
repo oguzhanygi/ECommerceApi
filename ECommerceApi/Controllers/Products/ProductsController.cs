@@ -9,43 +9,42 @@ namespace ECommerceApi.Controllers.Products;
 [Route("api/[controller]")]
 public class ProductsController(IProductService productService) : ControllerBase
 {
-    private readonly IProductService _productService = productService;
-
     /// <summary>
-    /// Get a product by ID
+    ///     Get a product by ID
     /// </summary>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
-        return product == null ? NotFound() : Ok(product);
+        Console.WriteLine($"GetById called with ID: {id}");
+        var product = await productService.GetProductByIdAsync(id);
+        return product is null ? NotFound() : Ok(product);
     }
 
     /// <summary>
-    /// Get all products
+    ///     Get all products
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
-        var products = await _productService.GetAllProductsAsync();
+        var products = await productService.GetAllProductsAsync();
         return Ok(products);
     }
 
     /// <summary>
-    /// Get products by category
+    ///     Get products by category
     /// </summary>
     [HttpGet("category/{categoryId:guid}")]
     [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetByCategory(Guid categoryId)
     {
-        return Ok(await _productService.GetProductsByCategoryAsync(categoryId));
+        return Ok(await productService.GetProductsByCategoryAsync(categoryId));
     }
 
     /// <summary>
-    /// Search products by name, description, or brand
+    ///     Search products by name, description, or brand
     /// </summary>
     [HttpGet("search")]
     [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
@@ -54,63 +53,63 @@ public class ProductsController(IProductService productService) : ControllerBase
         if (string.IsNullOrWhiteSpace(term))
             return BadRequest("Search term cannot be empty.");
 
-        return Ok(await _productService.SearchProductsAsync(term));
+        return Ok(await productService.SearchProductsAsync(term));
     }
 
     /// <summary>
-    /// Create a new product
+    ///     Create a new product
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(Product), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
     {
-        var createdProduct = await _productService.CreateProductAsync(dto);
+        var createdProduct = await productService.CreateProductAsync(dto);
         return createdProduct is null
             ? BadRequest()
             : CreatedAtAction(nameof(GetById), new { id = createdProduct.Id }, createdProduct);
     }
 
     /// <summary>
-    /// Update a product
+    ///     Update a product
     /// </summary>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductDto dto)
     {
-        var updatedProduct = await _productService.UpdateProductAsync(id, dto);
+        var updatedProduct = await productService.UpdateProductAsync(id, dto);
         return updatedProduct == null ? NotFound() : Ok(updatedProduct);
     }
 
     /// <summary>
-    /// Delete a product (soft delete)
+    ///     Delete a product (soft delete)
     /// </summary>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        return await _productService.DeleteProductAsync(id)
+        return await productService.DeleteProductAsync(id)
             ? NoContent()
             : NotFound();
     }
 
     /// <summary>
-    /// Restore a soft-deleted product
+    ///     Restore a soft-deleted product
     /// </summary>
     [HttpPatch("{id:guid}/restore")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Restore(Guid id)
     {
-        return await _productService.RestoreProductAsync(id)
+        return await productService.RestoreProductAsync(id)
             ? NoContent()
             : NotFound();
     }
 
     /// <summary>
-    /// Update product stock (increase/decrease)
+    ///     Update product stock (increase/decrease)
     /// </summary>
     [HttpPatch("{productId:guid}/stock")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -120,12 +119,12 @@ public class ProductsController(IProductService productService) : ControllerBase
         Guid productId,
         [FromBody] int quantityChange)
     {
-        var success = await _productService.UpdateProductStockAsync(
+        var success = await productService.UpdateProductStockAsync(
             productId, quantityChange);
 
         if (!success)
         {
-            var product = await _productService.GetProductByIdAsync(productId);
+            var product = await productService.GetProductByIdAsync(productId);
             return product == null
                 ? NotFound()
                 : BadRequest("Insufficient stock");

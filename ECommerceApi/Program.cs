@@ -34,5 +34,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStatusCodePages();
 
+app.MapControllers();
 
 app.Run();

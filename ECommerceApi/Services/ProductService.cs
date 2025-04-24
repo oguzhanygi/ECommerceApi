@@ -1,6 +1,6 @@
 using ECommerceApi.Data.Repositories.Interfaces;
 using ECommerceApi.DTOs.Products;
-using ECommerceApi.Models.Products;
+using ECommerceApi.Mappers.Products;
 using ECommerceApi.Services.Interfaces;
 
 namespace ECommerceApi.Services;
@@ -9,34 +9,45 @@ public class ProductService(
     IProductRepository productRepository)
     : IProductService
 {
-    public async Task<Product?> GetProductByIdAsync(Guid id)
+    public async Task<ProductResponseDto?> GetProductByIdAsync(Guid id)
     {
-        return await productRepository.GetByIdAsync(id);
+        var product = await productRepository.GetByIdAsync(id);
+        if (product is null) return null;
+        return ProductMapper.ToResponseDto(product);
     }
 
-    public async Task<IEnumerable<Product>> GetAllProductsAsync()
+    public async Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync()
     {
-        return await productRepository.GetAllAsync();
+        var products = await productRepository.GetAllAsync();
+        return products.Select(ProductMapper.ToResponseDto)!;
     }
 
-    public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId)
+    public async Task<IEnumerable<ProductResponseDto>> GetProductsByCategoryAsync(Guid categoryId)
     {
-        return await productRepository.GetProductsByCategoryAsync(categoryId);
+        var products = await productRepository.GetProductsByCategoryAsync(categoryId);
+        return products.Select(ProductMapper.ToResponseDto)!;
     }
 
-    public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
+    public async Task<IEnumerable<ProductResponseDto>> SearchProductsAsync(string searchTerm)
     {
-        return await productRepository.SearchProductsAsync(searchTerm);
+        var products = await productRepository.SearchProductsAsync(searchTerm);
+        return products.Select(ProductMapper.ToResponseDto)!;
     }
 
-    public async Task<Product?> CreateProductAsync(CreateProductDto dto)
+    public async Task<ProductResponseDto?> CreateProductAsync(CreateProductDto dto)
     {
-        return await productRepository.AddAsync(dto);
+        var product = ProductMapper.ToProduct(dto);
+        await productRepository.AddAsync(product);
+        return ProductMapper.ToResponseDto(product);
     }
 
-    public async Task<Product?> UpdateProductAsync(Guid id, UpdateProductDto dto)
+    public async Task<ProductResponseDto?> UpdateProductAsync(Guid id, UpdateProductDto dto)
     {
-        return await productRepository.UpdateAsync(id, dto);
+        var product = await productRepository.GetByIdAsync(id);
+        if (product is null) return null;
+        ProductMapper.ApplyUpdateToProduct(product, dto);
+        await productRepository.UpdateAsync(product);
+        return ProductMapper.ToResponseDto(product);
     }
 
     public async Task<bool> DeleteProductAsync(Guid id)

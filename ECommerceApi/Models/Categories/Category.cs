@@ -4,7 +4,7 @@ using ECommerceApi.Models.Products;
 
 namespace ECommerceApi.Models.Categories;
 
-public class Category : ISoftDeletable, IHasTimestamps
+public class Category : IEntity, ISoftDeletable, IHasTimestamps
 {
     public required Guid Id { get; init; }
 
