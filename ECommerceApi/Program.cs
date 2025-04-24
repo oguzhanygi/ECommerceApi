@@ -4,7 +4,6 @@ using ECommerceApi.Data.Repositories.Interfaces;
 using ECommerceApi.Services;
 using ECommerceApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,11 +24,7 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-}
+if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 app.UseHttpsRedirection();
 app.UseStatusCodePages();

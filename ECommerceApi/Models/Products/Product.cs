@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApi.Models.Products;
 
-public class Product : IEntity, ISoftDeletable, IHasTimestamps 
+public class Product : IEntity, ISoftDeletable, IHasTimestamps
 {
-    public required Guid Id { get; init; }
-
     [MaxLength(128)] [MinLength(2)] public required string Name { get; set; }
 
     [Range(0.0, double.MaxValue, ErrorMessage = "Price must be > 0.")]
@@ -24,6 +22,7 @@ public class Product : IEntity, ISoftDeletable, IHasTimestamps
 
     public required Guid CategoryId { get; set; }
     public Category? Category { get; set; }
+    public required Guid Id { get; init; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
     public bool IsDeleted { get; set; } = false;
