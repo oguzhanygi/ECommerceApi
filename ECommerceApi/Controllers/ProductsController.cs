@@ -1,9 +1,9 @@
 using ECommerceApi.DTOs.Products;
-using ECommerceApi.Models.Products;
+using ECommerceApi.Models;
 using ECommerceApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ECommerceApi.Controllers.Products;
+namespace ECommerceApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -17,7 +17,6 @@ public class ProductsController(IProductService productService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
-        Console.WriteLine($"GetById called with ID: {id}");
         var product = await productService.GetProductByIdAsync(id);
         return product is null ? NotFound() : Ok(product);
     }

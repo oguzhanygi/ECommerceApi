@@ -1,6 +1,6 @@
 using ECommerceApi.Data.Repositories.Interfaces;
 using ECommerceApi.DTOs.Products;
-using ECommerceApi.Mappers.Products;
+using ECommerceApi.Mappers;
 using ECommerceApi.Services.Interfaces;
 
 namespace ECommerceApi.Services;
@@ -12,8 +12,7 @@ public class ProductService(
     public async Task<ProductResponseDto?> GetProductByIdAsync(Guid id)
     {
         var product = await productRepository.GetByIdAsync(id);
-        if (product is null) return null;
-        return ProductMapper.ToResponseDto(product);
+        return product is null ? null : ProductMapper.ToResponseDto(product);
     }
 
     public async Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync()

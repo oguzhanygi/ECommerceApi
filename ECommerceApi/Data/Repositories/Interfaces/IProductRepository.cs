@@ -1,4 +1,4 @@
-using ECommerceApi.Models.Products;
+using ECommerceApi.Models;
 
 namespace ECommerceApi.Data.Repositories.Interfaces;
 
